@@ -1,0 +1,269 @@
+@mixin middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+};
+
+.students {
+  padding-top: 50px;
+
+  > .inner {
+    display: flex;
+    justify-content: space-between;
+
+    .subpage__menu {
+      width: 20%;
+      margin-right: 32px;
+  
+      .subpage__menu__title {
+        position: relative;
+        font-size: 24px;
+        font-weight: 600;
+        color: #000;
+        padding-left: 30px;
+      }
+  
+      .subpage__menu__title:before {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        content: '';
+        width: 4px;
+        height: 24px;
+        background: #33383f;
+      }
+  
+      .subpage__menu__list {
+          padding-top: 38px;
+  
+        .subpage__menu__item {
+          display: block;
+          width: 100%;
+          padding: 21px 0 21px 20px;
+          font-size: 18px;
+          color: #000;
+          border-bottom: 1px solid #cbcbcb;
+          line-height: 1;
+        }
+    
+        .subpage__menu__item:first-child {
+            border-top: 1px solid #cbcbcb;
+        }
+    
+        .subpage__menu__item:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    
+        .subpage__menu__item--on {
+            color: #fff;
+            background: #33383f;
+        }
+    
+        .subpage__menu__item--on:hover {
+            text-decoration: none;
+        }
+      }
+  
+      
+    }
+
+    .subpage__main {
+      width: 75%;
+      min-height: 100vh;
+      
+      .subpage__main__title {
+        font-size: 30px;
+        font-weight: 600;
+        color: #33383f;
+      }
+      
+      .subpage__main__content {
+          padding-top: 30px;
+          font-size: 20px;
+          color: #333;
+
+        .board .subpage__main__content {
+          font-size: 16px;
+        }
+        
+        .main__title {
+            position: relative;
+            font-size: 26px;
+            color: #0f386e;
+            padding: 24px 0;
+            margin-bottom: 20px;
+            word-break: keep-all;
+            line-height: 1.54;
+        }
+        
+        .main__title:after {
+            position: absolute;
+            content: '';
+            width: 28px;
+            height: 3px;
+            background: #0f386e;
+            left: 0;
+            bottom: 0;
+        }
+        
+        .main__content {
+          line-height: 1.9;
+
+          .person__wrap--category {
+
+            .person__title {
+              padding: 8px 0;
+              border-bottom: 3px solid #f1f1f1;
+              color: #000;
+              font-size: 24px;
+              line-height: 1;
+              font-weight: 500;
+              text-align: left;
+            }
+            .person__wrap--item {
+              height: 300px;
+              display: grid;
+              justify-content: space-between;
+              grid-template-columns: 30% 30% 30%;
+              padding: 20px;
+
+              .person__item {
+                width: 100%;
+                text-align: center;
+                padding: 0 20px 20px 0;
+                box-sizing: border-box;
+                border-bottom: 1px solid #EAEAEA;
+                margin: 20px 10px;
+                transition: transform 0.7s ease;
+
+                .person__img--people {
+                  border: 1px solid #EAEAEA;
+                  margin-bottom: 10px;
+                  border-radius: 5px;
+
+                  .imageBox {
+                    width:100%;
+                    height: 200px; 
+                    background-color:#fff;
+                    @include middle();
+                    border-radius: 5px;
+
+                    img {
+                      width: 100%;
+                      max-height: 200px;
+                      object-fit: contain;
+                    }
+                  }
+                }
+                .person__coname {
+                  font-size: 16px;
+                  text-align: left;
+                }
+                .person__name {
+                  font-size: 14px;
+                  text-align: left;
+                }
+                
+              }
+              .person__item:hover { 
+                border-bottom: 1px solid #0f386e;
+                cursor: pointer;
+                transform: scale(1.1);
+              }
+            }
+           
+          }
+
+
+          p {
+            word-break: keep-all;
+            padding-bottom: 30px;
+          }
+          p:last-child {
+            padding-bottom: 0;
+          }    
+        }
+        
+        
+      }
+      
+      
+    }
+    
+    
+  }
+  
+
+  
+}
+
+@media (max-width: 1000px) { 
+  .students {
+  
+    > .inner {
+
+      .subpage__menu { 
+        display: none;
+      }
+      .subpage__main { 
+        width: 100%;
+
+        .subpage__main__title {
+          font-size: 20px;
+        }
+
+        .subpage__main__content {
+          font-size: 14px;
+          padding-top: 14px;
+
+          .main__content {
+            .person__wrap--category {
+
+              .person__title {
+                font-size: 20px;
+              }
+              .person__wrap--item {
+                
+              }
+            }
+          }
+
+        }
+
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) { 
+  .students {
+  
+    .inner {
+
+      
+      .subpage__main { 
+        
+       
+        .subpage__main__content {
+         
+
+          .main__content {
+            .person__wrap--category {
+
+              
+              .person__wrap--item {
+                grid-template-columns: 47% 47%;
+              }
+            }
+          }
+
+        }
+
+      }
+    }
+  }
+}
+
+

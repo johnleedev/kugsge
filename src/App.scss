@@ -1,0 +1,50 @@
+.App {
+  font-family: 'Pretendard';
+  color: #333;
+  font-weight: 500;
+  line-height: 1.4;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+img {
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+input {
+  outline: none;
+  background-color: #fff;
+}
+
+.inner {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .leftMenubox {
+    width: 20%;
+    min-height: 100vh;
+  }
+  .rightContentBox {
+    width: 80%;
+    min-height: 100vh;
+  }
+}
+
+@media screen and (max-width : 1500px) { 
+  .inner {
+    width: 90vw;
+  }  
+}
+
+
+
+
+
+
+  
