@@ -7,7 +7,6 @@ import MainURL from '../../MainURL';
 
 export default function Students() {
 
-  
   let navigate = useNavigate();
 
   const userName = sessionStorage.getItem('userName');
@@ -18,8 +17,6 @@ export default function Students() {
   ( userName === null || userName === undefined 
   || userId === null || userId === undefined 
   || userYearStage === null || userYearStage === undefined) 
-    
-
 
   interface UsersProps {
     userName: string;
@@ -36,18 +33,60 @@ export default function Students() {
     userCoImage :string;
   }
 
-
+  const [usersOrigin, setUsersOrigin] = useState<UsersProps[]>([]);
   const [users, setUsers] = useState<UsersProps[]>([]);
+  const [yearStages, setYearStages] = useState([]);
+  const [selectedYearStage, setSelectedYearStage] = useState('');
   const fetchPosts = async () => {
     const res = await axios.get(`${MainURL}/network/getusers`)
     if (res) {
-      setUsers(res.data);
+      const copy: UsersProps[] = res.data.users;
+      const yearStagesCopy = res.data.yearStages;
+      yearStagesCopy.unshift("전체");
+      setYearStages(yearStagesCopy);
+      copy.sort((a, b) => {
+        const aHasValue = a.userCoName !== "" && a.userCoImage !== "" && a.userCoImage !== null;
+        const bHasValue = b.userCoName !== "" && b.userCoImage !== "" && b.userCoImage !== null;
+        if (aHasValue && !bHasValue) return -1;
+        if (!aHasValue && bHasValue) return 1;
+        if (!aHasValue && !bHasValue) return 0;
+         return a.userCoName.localeCompare(b.userCoName);
+      });
+      setUsersOrigin(copy);
+      setUsers(copy);
     }
   };
 
   useEffect(() => {
 		fetchPosts();
 	}, []);  
+
+  
+  const handleYearStageChange = (selected : any) => {
+    if (selected === '전체') {
+      setUsers(usersOrigin);
+    } else {
+      setSelectedYearStage(selected);
+      const copy = usersOrigin.filter((e:any)=>e.userYearStage === selected);
+      setUsers(copy);
+    }
+  };
+
+  const [inputValue, setInputValue] = useState('');  
+  const changeInputValue = (text:string) => {
+    setInputValue(text);
+    if (text === '') {
+      setUsers(usersOrigin);
+    }
+  };
+  const filteredWord = (inputText : string) => {
+    const filteredList = usersOrigin.filter((users: any) => {
+      const searchFields = [users.userName, users.userCoName];
+      return searchFields.some((field) => field && field.toLowerCase().includes(inputText.toLowerCase()));
+    });
+    setUsers(filteredList);
+  }
+
 
   interface PersonGroup {
     yearStage: string;
@@ -57,7 +96,6 @@ export default function Students() {
   const personData: PersonGroup[] = users.reduce((acc: PersonGroup[], curr: UsersProps) => {
     const yearStage = curr.userYearStage;
     const existingGroup = acc.find(group => group.yearStage === yearStage);
-
     const person: UsersProps = {
         userName: curr.userName,
         userPhone: curr.userPhone,
@@ -72,7 +110,6 @@ export default function Students() {
         userCoNotice: curr.userCoNotice,
         userCoImage: curr.userCoImage
     };
-
     if (existingGroup) {
         existingGroup.person.push(person);
     } else {
@@ -111,7 +148,35 @@ export default function Students() {
 
         <div className="subpage__main">
           <div className="subpage__main__title">재학생</div>
+          <div className="subpage__main__searchbar">
+            <select 
+              value={selectedYearStage}
+              onChange={(e)=>{handleYearStageChange(e.target.value);}}
+              className="dropdownBox"
+            >
+              {
+                yearStages.map((option:any, index:any) => (
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
+                ))
+              }
+            </select> 
+            <div className="searchBox">
+              <input className="searchInput" type="text" placeholder='이름, 업체명 검색'
+                value={inputValue} onChange={(e)=>{changeInputValue(e.target.value)}}/>
+              <div className="searchBtn"
+                onClick={()=>{filteredWord(inputValue);}}
+              >
+                <p>검색</p>
+              </div>
+            </div>
+          </div>
+
           <div className="subpage__main__content">
+            <p style={{fontSize:'14px', marginBottom:'10px'}}>
+              * 정렬 기준 : 대표사진 유무 - 업체명 가나다순
+            </p>            
             <div className="main__content">
               {personData.map((item:any, index:any) => (
                 <div

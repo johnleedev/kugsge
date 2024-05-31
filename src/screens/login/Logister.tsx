@@ -95,7 +95,8 @@ export default function Logister(props:any) {
     { value: '18기', label: '18기' },
     { value: '19기', label: '19기' },
     { value: '20기', label: '20기' },
-    { value: '21기', label: '21기' }
+    { value: '21기', label: '21기' },
+    { value: '교수진', label: '교수진' }
   ];
 
   const handleLogister = async () => {
