@@ -9,7 +9,7 @@ import MainURL from "../../MainURL";
 import { FaAngleDoubleRight } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";
 import DaumPostcode from 'react-daum-postcode';
-
+import { CiCircleMinus } from "react-icons/ci";
 
 export default function Logister(props:any) {
   
@@ -45,6 +45,10 @@ export default function Logister(props:any) {
   const [logisterPasswdCheck, setLogisterPasswdCheck] = useState('');
   const [logisterName, setLogisterName] = useState('');
   const [logisterPhone, setLogisterPhone] = useState('');
+  
+  const [studentOrFaculty, setStudentOrFaculty] = useState('');
+  const [facultySort, setFacultySort] = useState('');
+
   const [logisterYearStage, setLogisterYearStage] = useState('21기');
   const [logisterCoName, setLogisterCoName] = useState('');
   const [logisterCoSort, setLogisterCoSort] = useState('');
@@ -54,6 +58,15 @@ export default function Logister(props:any) {
   const [logisterCoEmail, setLogisterCoEmail] = useState('');
   const [logisterCoHomePage, setLogisterCoHomePage] = useState('');
   const [logisterCoNotice, setLogisterCoNotice] = useState('');
+
+  const [facultyLocation, setFacultyLocation] = useState('');
+  const [facultyPhone, setFacultyPhone] = useState('');
+  const [facultyEmail, setFacultyEmail] = useState('');
+  const [facultyField, setFacultyField] = useState('');
+  const [facultyDegree, setFacultyDegree] = useState([""]);
+  const [facultyCareer, setFacultyCareer] = useState([""]);
+  const [facultyNotice, setFacultyNotice] = useState('');
+
 
   // 주소 입력 함수
   const [isViewAddressTab, setIsViewAddressTab] = useState<boolean>(false);
@@ -95,8 +108,7 @@ export default function Logister(props:any) {
     { value: '18기', label: '18기' },
     { value: '19기', label: '19기' },
     { value: '20기', label: '20기' },
-    { value: '21기', label: '21기' },
-    { value: '교수진', label: '교수진' }
+    { value: '21기', label: '21기' }
   ];
 
   const handleLogister = async () => {
@@ -110,6 +122,7 @@ export default function Logister(props:any) {
         passwd : logisterPasswd,
         name : logisterName,
         phone : logisterPhone,
+        stOrFa : studentOrFaculty,
         yearStage : logisterYearStage,
         coName : logisterCoName,
         coSort : logisterCoSort,
@@ -118,7 +131,47 @@ export default function Logister(props:any) {
         coPhone : logisterCoPhone,
         coEmail : logisterCoEmail,
         coHomePage : logisterCoHomePage,
-        coNotice : logisterCoNotice
+        coNotice : logisterCoNotice,
+     })
+     .then((res)=>{
+       if (res.data) {
+         alert('가입이 완료되었습니다. 로그인 해주세요.');
+         navigate('/login');
+       }
+     })
+     .catch((err)=>{
+       alert('다시 시도해주세요.')
+     })
+   };
+
+   const handleLogisterFaculty = async () => {
+    await axios
+     .post(`${MainURL}/login/logisterfaculty`, {
+        checkUsingPolicy : checkUsingPolicy,
+        checkPersonalInfo: checkPersonalInfo,
+        checkInfoToOthers: checkInfoToOthers,
+        checkGiftNotifi: checkGiftNotifi,
+        userId : logisterId,
+        passwd : logisterPasswd,
+        name : logisterName,
+        phone : logisterPhone,
+        stOrFa : studentOrFaculty,
+        yearStage : logisterYearStage,
+        coName : logisterCoName,
+        coSort : logisterCoSort,
+        coAddress : logisterCoAddress,
+        coAddressRest : logisterCoAddressRest,
+        coPhone : logisterCoPhone,
+        coEmail : logisterCoEmail,
+        coHomePage : logisterCoHomePage,
+        coNotice : logisterCoNotice,
+        faLocation: facultyLocation,
+        faEmail: facultyEmail,
+        faPhone: facultyPhone,
+        faField: facultyField,
+        faDegree: JSON.stringify(facultyDegree),
+        faCareer: JSON.stringify(facultyCareer),
+        faNotice : facultyNotice
      })
      .then((res)=>{
        if (res.data) {
@@ -314,88 +367,258 @@ export default function Logister(props:any) {
             </div>
 
             <div className="inputbox">
-              <p>창업대학원 기수<span>*</span></p>
-              <div className="dropdownBox-cover">
-                <select 
-                  value={logisterYearStage} 
-                  onChange={(e)=>{
-                    setLogisterYearStage(e.target.value);
-                  }}
-                  className="dropdownBox"
-                >
-                  {
-                    yearStageOptions.map((option:any, index:any) => (
-                      <option key={index} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))
-                  }
-                </select>
+              <p>구분 <span>*</span></p>
+              <div className="checkInputCover">
+                <div className='checkInput'>
+                  <input className="input" type="checkbox"
+                    checked={studentOrFaculty === 'student'}
+                    onChange={()=>{setStudentOrFaculty('student')}}
+                  />
+                  <h5>학생</h5>
+                </div>
+                <div className='checkInput' style={{marginLeft:'10px'}}>
+                  <input className="input" type="checkbox"
+                    checked={studentOrFaculty === 'faculty'}
+                    onChange={()=>{setStudentOrFaculty('faculty')}}
+                  />
+                  <h5>교수진</h5>
+                </div>
               </div>
             </div>
+
+            {(studentOrFaculty === 'faculty' || studentOrFaculty === 'both') &&
+            <div className="inputbox">
+              <p>구분2 <span>*</span></p>
+              <div className="checkInputCover">
+                <div className='checkInput'>
+                  <input className="input" type="checkbox"
+                    checked={facultySort === 'faculty'}
+                    onChange={()=>{
+                      setFacultySort('faculty');
+                      setStudentOrFaculty('faculty');
+                    }}
+                  />
+                  <h5>정교수</h5>
+                </div>
+                <div className='checkInput' style={{marginLeft:'10px'}}>
+                  <input className="input" type="checkbox"
+                    checked={facultySort === 'both'}
+                    onChange={()=>{
+                      setFacultySort('both');
+                      setStudentOrFaculty('both');
+                    }}
+                  />
+                  <h5>겸임교수</h5>
+                </div>
+              </div>
+            </div>
+            }
+
+            {
+              (studentOrFaculty === 'student' || facultySort === 'both') &&
+              <div className="inputbox">
+                <p>창업대학원 기수<span>*</span></p>
+                <div className="dropdownBox-cover">
+                  <select 
+                    value={logisterYearStage} 
+                    onChange={(e)=>{
+                      setLogisterYearStage(e.target.value);
+                    }}
+                    className="dropdownBox"
+                  >
+                    {
+                      yearStageOptions.map((option:any, index:any) => (
+                        <option key={index} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))
+                    }
+                  </select>
+                </div>
+              </div>
+            }
+            
 
             <div style={{width:'100%', height:'2px', backgroundColor:'#EAEAEA', margin:'10px 0'}}></div>
 
-            <h2>선택항목</h2>  
-            <div className="inputbox">
-              <p>업체명</p>
-              <input value={logisterCoName} className={logisterCoName === '' ? "inputdefault" : "inputdefault select" } type="text" 
-                onChange={(e) => {setLogisterCoName(e.target.value)}}/>
-            </div>
-            <div className="inputbox">
-              <p>업태/종목</p>
-              <input value={logisterCoSort} className={logisterCoSort === '' ? "inputdefault" : "inputdefault select" } type="text" 
-                onChange={(e) => {setLogisterCoSort(e.target.value)}}/>
-            </div>
-            <div className="inputbox">
-              <div className="inputbox-btncover">
-                <p>업체주소</p>
-                <div className="addBtn"
-                  onClick={()=>{setIsViewAddressTab(true)}}
-                >주소찾기</div>
-              </div>
-              { isViewAddressTab &&
-                <DaumPostcode
-                  style={{
-                    width: '400px',
-                    height: '400px',
-                  }}
-                  onComplete={onCompletePost}
-                ></DaumPostcode>
-              }
-              
-              <input value={logisterCoAddress} className={logisterCoAddress === '' ? "inputdefault" : "inputdefault select" } type="text" 
-                  onChange={(e) => {setLogisterCoAddress(e.target.value)}}
-                />
-              <input value={logisterCoAddressRest} className={logisterCoAddressRest === '' ? "inputdefault" : "inputdefault select" } type="text" placeholder="나머지주소"
-                onChange={(e) => {setLogisterCoAddressRest(e.target.value)}}
-              />
-            </div>
-            <div className="inputbox">
-              <p>업체번호</p>
-              <input value={logisterCoPhone} className={logisterCoPhone === '' ? "inputdefault" : "inputdefault select" } type="text" 
-                onChange={(e) => {setLogisterCoPhone(e.target.value)}}/>
-            </div>
-            <div className="inputbox">
-              <p>업체이메일</p>
-              <input value={logisterCoEmail} className={logisterCoEmail === '' ? "inputdefault" : "inputdefault select" } type="text" 
-                onChange={(e) => {setLogisterCoEmail(e.target.value)}}/>
-            </div>
-            <div className="inputbox">
-              <p>업체홈페이지</p>
-              <input value={logisterCoHomePage} className={logisterCoHomePage === '' ? "inputdefault" : "inputdefault select" } type="text" 
-                onChange={(e) => {setLogisterCoHomePage(e.target.value)}}/>
-            </div>
-            <div className="inputbox" style={{}}>
-              <p>업체소개</p>
-              <textarea 
-                className={logisterCoNotice === '' ? "textarea" : "textarea areaselect"}
-                value={logisterCoNotice}
-                onChange={(e)=>{setLogisterCoNotice(e.target.value)}}
-              />
-            </div>
+            {
+              (studentOrFaculty === 'faculty' || studentOrFaculty === 'both' )&&
+              <>
+              <h2>연구소개(선택)</h2>  
 
-            <p style={{fontSize:'14px', margin:'10px 0'}}>* 회사 대표 사진은 마이페이지에서 업로드 할 수 있습니다.</p>
+              { studentOrFaculty === 'faculty' &&
+              <>
+              <div className="inputbox">
+                <p>연구실위치</p>
+                <input value={facultyLocation} className={facultyLocation === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                  onChange={(e) => {setFacultyLocation(e.target.value)}}/>
+              </div>
+              <div className="inputbox">
+                <p>연구실번호</p>
+                <input value={facultyPhone} className={facultyPhone === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                  onChange={(e) => {setFacultyPhone(e.target.value)}}/>
+              </div>
+              </>
+              }
+              <div className="inputbox">
+                <p>이메일</p>
+                <input value={facultyEmail} className={facultyEmail === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                  onChange={(e) => {setFacultyEmail(e.target.value)}}/>
+              </div>
+              <div className="inputbox">
+                <p>연구분야</p>
+                <input value={facultyField} className={facultyField === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                  onChange={(e) => {setFacultyField(e.target.value)}}/>
+              </div>
+              <div className="inputbox">
+                <div className="inputbox-btncover">
+                  <p>학위</p>
+                  <div className="addBtn"
+                    onClick={()=>{
+                      const copy = [...facultyDegree, ""];
+                      setFacultyDegree(copy);
+                    }}
+                  >입력란추가</div>
+                </div>
+                {
+                  facultyDegree.map((item:any, itemindex:any)=>{
+                    return (
+                      <div className="subRow">
+                        <input value={item} className={item === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                          onChange={(e) => {
+                            const copy = [...facultyDegree];
+                            copy[itemindex] = e.target.value;
+                            setFacultyDegree(copy)}
+                          }/>
+                          <div onClick={()=>{
+                            const copy = [...facultyDegree];
+                            const filter = copy.filter((_, index) => index !== itemindex);
+                            setFacultyDegree(filter);
+                          }}>
+                            <CiCircleMinus color='#FF0000' size={20}/>
+                          </div>  
+                      </div>
+                    )
+                  })
+                }
+              </div>
+              <div className="inputbox">
+                <div className="inputbox-btncover">
+                  <p>경력 및 활동</p>
+                  <div className="addBtn"
+                    onClick={()=>{
+                      const copy = [...facultyCareer, ""];
+                      setFacultyCareer(copy);
+                    }}
+                  >입력란추가</div>
+                </div>
+                {
+                  facultyCareer.map((item:any, itemindex:any)=>{
+                    return (
+                      <div className="subRow">
+                        <input value={item} className={item === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                          onChange={(e) => {
+                            const copy = [...facultyCareer];
+                            copy[itemindex] = e.target.value;
+                            setFacultyCareer(copy)}
+                          }/>
+                          <div onClick={()=>{
+                             const copy = [...facultyCareer];
+                             const filter = copy.filter((_, index) => index !== itemindex);
+                             setFacultyCareer(filter);
+                          }}>
+                            <CiCircleMinus color='#FF0000' size={20}/>
+                          </div>  
+                      </div>
+                    )
+                  })
+                }
+              </div>
+              <div className="inputbox" style={{}}>
+                <p>기타소개</p>
+                <textarea 
+                  className={facultyNotice === '' ? "textarea" : "textarea areaselect"}
+                  value={facultyNotice}
+                  onChange={(e)=>{setFacultyNotice(e.target.value)}}
+                />
+              </div>
+
+              <div style={{width:'100%', height:'2px', backgroundColor:'#EAEAEA', margin:'10px 0'}}></div>
+            </>
+            }
+
+            
+            {
+              (studentOrFaculty === 'student'  || facultySort === 'both' )&&
+              <>
+              <h2>업체소개(선택)</h2>
+
+              <div className="inputbox">
+                <p>업체명</p>
+                <input value={logisterCoName} className={logisterCoName === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                  onChange={(e) => {setLogisterCoName(e.target.value)}}/>
+              </div>
+              <div className="inputbox">
+                <p>업태/종목</p>
+                <input value={logisterCoSort} className={logisterCoSort === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                  onChange={(e) => {setLogisterCoSort(e.target.value)}}/>
+              </div>
+              <div className="inputbox">
+                <div className="inputbox-btncover">
+                  <p>업체주소</p>
+                  <div className="addBtn"
+                    onClick={()=>{setIsViewAddressTab(true)}}
+                  >주소찾기</div>
+                </div>
+                { isViewAddressTab &&
+                  <DaumPostcode
+                    style={{
+                      width: '400px',
+                      height: '400px',
+                    }}
+                    onComplete={onCompletePost}
+                  ></DaumPostcode>
+                }
+                
+                <input value={logisterCoAddress} className={logisterCoAddress === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                    onChange={(e) => {
+                      alert('기본주소는 주소찾기를 통해 입력해주세요')
+                    }}
+                  />
+                <input value={logisterCoAddressRest} className={logisterCoAddressRest === '' ? "inputdefault" : "inputdefault select" } type="text" placeholder="나머지주소"
+                  onChange={(e) => {setLogisterCoAddressRest(e.target.value)}}
+                />
+              </div>
+              <div className="inputbox">
+                <p>업체번호</p>
+                <input value={logisterCoPhone} className={logisterCoPhone === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                  onChange={(e) => {setLogisterCoPhone(e.target.value)}}/>
+              </div>
+              <div className="inputbox">
+                <p>업체이메일</p>
+                <input value={logisterCoEmail} className={logisterCoEmail === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                  onChange={(e) => {setLogisterCoEmail(e.target.value)}}/>
+              </div>
+              <div className="inputbox">
+                <p>업체홈페이지</p>
+                <input value={logisterCoHomePage} className={logisterCoHomePage === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                  onChange={(e) => {setLogisterCoHomePage(e.target.value)}}/>
+              </div>
+              <div className="inputbox" style={{}}>
+                <p>업체소개</p>
+                <textarea 
+                  className={logisterCoNotice === '' ? "textarea" : "textarea areaselect"}
+                  value={logisterCoNotice}
+                  onChange={(e)=>{setLogisterCoNotice(e.target.value)}}
+                />
+              </div>
+            
+
+              <p style={{fontSize:'14px', margin:'10px 0'}}>* 회사 대표 사진은 마이페이지에서 업로드 할 수 있습니다.</p>
+            </>
+            }
+
+            
 
             <div className="buttonbox">
               <div className="button"
@@ -404,7 +627,9 @@ export default function Logister(props:any) {
                   alert('필수항목을 채워주세요.')
                 } else {
                   if (logisterIdCheck) {
-                    handleLogister();
+                    studentOrFaculty === 'student' 
+                    ? handleLogister()
+                    : handleLogisterFaculty()
                   } else {
                     alert('아이디 중복 체크를 해주세요.')
                   }

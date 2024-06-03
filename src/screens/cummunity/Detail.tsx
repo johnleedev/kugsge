@@ -9,7 +9,7 @@ import { FaRegThumbsDown,FaRegThumbsUp  } from "react-icons/fa";
 import { FaPen } from "react-icons/fa";
 import { format } from "date-fns";
 import DateFormmating from '../../components/DateFormmating';
-import { HiDotsVertical } from "react-icons/hi";
+import { CiCircleMinus } from "react-icons/ci";
 
 export default function Detail() {
 
@@ -21,6 +21,7 @@ export default function Detail() {
   const userName = sessionStorage.getItem('userName');
   const userId = sessionStorage.getItem('userId');
   const userYearStage = sessionStorage.getItem('userYearStage');
+  const stOrFa = sessionStorage.getItem('stOrFa');
 
   interface ListProps {
     id : number;
@@ -98,6 +99,7 @@ export default function Detail() {
         userId : userId,
         userName : userName,
         userYearStage : userYearStage,
+        stOrFa : stOrFa,
       })
       .then((res) => {
         if (res.data) {
@@ -109,6 +111,22 @@ export default function Detail() {
       .catch(() => {
         console.log('실패함')
       })
+  };
+
+
+  // 댓글 삭제 함수 ----------------------------------------------
+  const deleteComment = (item:any) => {
+    axios
+      .post(`${MainURL}/community/commentdelete`, {
+        commentId : item.id,
+        postId : item.post_id
+      })
+      .then((res) => {
+        if (res.data === true) {
+          alert('삭제되었습니다.');
+          setRefresh(!refresh);
+        } 
+      });
   };
 
   // 게시글 삭제 함수 ----------------------------------------------
@@ -199,7 +217,10 @@ export default function Detail() {
             <div className="top_box">
               <div className="left">
                 <h1>{renderPreview(propsData.title)}</h1>
-                <p>{propsData.userName}</p>
+                {propsData.stOrFa === 'student' 
+                ? <p>{propsData.userName} {propsData.userYearStage}</p>
+                : <p>{propsData.userName} 교수</p>
+                }
               </div>
               <div className="right">
                 <div className='contentcover'>
@@ -257,7 +278,10 @@ export default function Detail() {
 
             <div className="userBox">
               <FaPen color='#334968' />
-              <p>{userName} {userYearStage}</p>
+              {stOrFa === 'student' 
+              ? <p>{userName} {userYearStage}</p>
+              : <p>{userName} 교수</p>
+              }
             </div>
             <div className="addPostBox">
               <div style={{display:'flex', justifyContent:'space-between', alignItems:'end'}}>
@@ -292,10 +316,22 @@ export default function Detail() {
               commentsList.map((item:any, index:any)=>{
                 return (
                   <div className="comments_box" key={index}>
-                    <div className="namebox">
-                      <h3>{item.userName}</h3>
-                      <h3>{item.userYearStage}</h3>
-                      <p>{DateFormmating(item.date)}</p>
+                    <div className="topBox">
+                      <div className="namebox">
+                        <h3>{item.userName}</h3>
+                        {
+                          item.stOrFa === 'student' 
+                          ? <h3>{item.userYearStage}</h3>
+                          : <h3>교수</h3>
+                        }
+                        <p>{DateFormmating(item.date)}</p>
+                      </div>
+                      {
+                        (item.userId === userId && item.userName === userName ) &&
+                        <div onClick={()=>{deleteComment(item);}}>
+                          <CiCircleMinus color='#FF0000' size={20}/>
+                        </div>
+                      }
                     </div>
                     <div className="textbox">
                       <p>{( userName === null || userName === undefined 

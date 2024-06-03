@@ -18,6 +18,7 @@ export default function Post () {
   const userName = sessionStorage.getItem('userName');
   const userId = sessionStorage.getItem('userId');
   const userYearStage = sessionStorage.getItem('userYearStage');
+  const stOrFa = sessionStorage.getItem('stOrFa');
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -77,6 +78,7 @@ export default function Post () {
       userId : userId,
       userName : userName,
       userYearStage : userYearStage,
+      stOrFa : stOrFa,
       title : title,
       content: content,
       postImage : inputImages
@@ -137,7 +139,11 @@ export default function Post () {
 
             <div className="userBox">
               <FaPen color='#334968' />
-              <p>{userName} {userYearStage}</p>
+              {stOrFa === 'student' 
+              ? <p>{userName} {userYearStage}</p>
+              : <p>{userName} 교수</p>
+              }
+              
             </div>
             <div className="addPostBox">
               <div style={{display:'flex', justifyContent:'space-between', alignItems:'end'}}>

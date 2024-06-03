@@ -127,7 +127,7 @@
           justify-content: space-between;
 
           .addBtn {
-            width: 70px;
+            min-width: 70px;
             text-align: center;
             border: 1px solid #d7d7d7;
             border-radius: 3px;
@@ -188,7 +188,35 @@
             outline: none;
           }
         }
-        
+        .checkInputCover {
+          width: 90%;
+          display: flex;
+          align-items: end;
+          margin-top: 10px;
+  
+          .checkInput {
+            width: 50%;
+            display: flex;
+            align-items: center; 
+            justify-content: center;
+            margin-right: 10px;
+            .input {
+              width: 20px;
+              height: 20px;
+            }
+            > h5 {
+              margin-left: 10px;
+              flex: 1;
+            }
+          }
+          
+        }
+        .subRow {
+          width: 90%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
       }
       .buttonbox {
         width: 500px;

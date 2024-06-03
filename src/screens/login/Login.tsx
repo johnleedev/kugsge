@@ -12,10 +12,10 @@ export default function Login(props:any) {
 
   const [logisterId, setLogisterId] = useState('');
   const [logisterPasswd, setLogisterPasswd] = useState('');
+  const [studentOrFaculty, setStudentOrFaculty] = useState('');
 
   // 접속시 접속수 증가시키기
   const loginUseCount = () => {
-    console.log('salkjlasd')
     const currentDate = new Date();
 		const date = format(currentDate, 'yyyy-MM-dd');
     axios
@@ -40,6 +40,7 @@ export default function Login(props:any) {
         sessionStorage.setItem('userName', res.data.name);
         sessionStorage.setItem('userId', res.data.userId);
         sessionStorage.setItem('userYearStage', res.data.userYearStage);
+        sessionStorage.setItem('stOrFa', res.data.stOrFa);
         alert('로그인 되었습니다.');
         navigate('/');
         window.scrollTo(0, 0);
@@ -58,6 +59,37 @@ export default function Login(props:any) {
      })
    };
 
+   const handleLoginfaculty = async () => {
+    await axios
+     .post(`${MainURL}/login/loginfaculty`, {
+       userId : logisterId,
+       passwd : logisterPasswd,
+     })
+     .then((res)=>{
+      if (res.data.success) {
+        loginUseCount();
+        sessionStorage.setItem('userName', res.data.name);
+        sessionStorage.setItem('userId', res.data.userId);
+        sessionStorage.setItem('userYearStage', res.data.userYearStage);
+        sessionStorage.setItem('stOrFa', res.data.stOrFa);
+        alert('로그인 되었습니다.');
+        navigate('/');
+        window.scrollTo(0, 0);
+        window.location.reload();
+       } else {
+        if (res.data.which === 'id') {
+          alert('없는 아이디입니다.');  
+        }
+        if (res.data.which === 'passwd') {
+          alert('비밀번호가 정확하지 않습니다.');
+        }
+       }
+     })
+     .catch((err)=>{
+       alert('다시 시도해주세요.')
+     })
+   }; 
+
   return (
     <div className="login">
       <div className="inner">
@@ -65,6 +97,26 @@ export default function Login(props:any) {
         <div className="container">
           <div className="noticebox">
             <p>로그인을 하시면 더 많은 서비스를 이용하실 수 있습니다.</p>
+          </div>
+
+          <div className="inputbox">
+            <p>구분</p>
+            <div className="checkInputCover">
+              <div className='checkInput'>
+                <input className="input" type="checkbox"
+                  checked={studentOrFaculty === 'student'}
+                  onChange={()=>{setStudentOrFaculty('student')}}
+                />
+                <h5>학생</h5>
+              </div>
+              <div className='checkInput' style={{marginLeft:'10px'}}>
+                <input className="input" type="checkbox"
+                  checked={studentOrFaculty === 'faculty'}
+                  onChange={()=>{setStudentOrFaculty('faculty')}}
+                />
+                <h5>교수진</h5>
+              </div>
+            </div>
           </div>
 
           <div className="inputbox">
@@ -80,7 +132,15 @@ export default function Login(props:any) {
 
           <div className="buttonbox">
             <div className="button"
-             onClick={handleLogin}
+             onClick={()=>{
+              if (studentOrFaculty === '') {
+                alert('구분을 선택해주세요')
+              } else {
+                studentOrFaculty === 'student'
+                ? handleLogin()
+                : handleLoginfaculty()
+              }
+             }}
             >
               <p>로그인</p>
             </div>

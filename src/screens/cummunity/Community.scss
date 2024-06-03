@@ -441,21 +441,28 @@
           border-bottom: 1px solid #ddd;
           margin: 20px 0;
 
-          .namebox {
+          .topBox {
             display: flex;
-            align-items: end;
-            margin-bottom: 10px;
+            justify-content: space-between;
 
-            h3 {
-              font-size: 18px;
-              margin-right: 10px;
-              font-weight: 600;
+            .namebox {
+              display: flex;
+              align-items: end;
+              margin-bottom: 10px;
+  
+              h3 {
+                font-size: 18px;
+                margin-right: 10px;
+                font-weight: 600;
+              }
+              p {
+                font-size: 16px;
+                margin-left: 10px;
+              }
             }
-            p {
-              font-size: 16px;
-              margin-left: 10px;
-            }
+
           }
+          
 
           .textbox {
             padding-left: 10px;

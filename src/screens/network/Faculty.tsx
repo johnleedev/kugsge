@@ -21,7 +21,15 @@ export default function Faculty () {
   interface UsersProps {
     userName: string;
     userPhone: string;
-    userYearStage: string;
+    stOrFa : string;
+    userYearStage : string;
+    faLocation: string;
+    faEmail : string;
+    faPhone : string;
+    faField: string;
+    faDegree : string;
+    faCareer : string;
+    faNotice: string;
     userCoName: string;
     userCoSort : string;
     userCoAddress: string;
@@ -38,7 +46,8 @@ export default function Faculty () {
     const res = await axios.get(`${MainURL}/network/getfaculty`)
     if (res) {
       const copy: UsersProps[] = res.data;
-      setUsers(copy);
+      const filter = copy.sort((a:any, b:any)=> b.stOrFa.localeCompare(a.stOrFa));
+      setUsers(filter);
     }
   };
 
@@ -48,17 +57,25 @@ export default function Faculty () {
 
 
   interface PersonGroup {
-    yearStage: string;
+    stOrFa: string;
     person: UsersProps[];
   }
   
   const personData: PersonGroup[] = users.reduce((acc: PersonGroup[], curr: UsersProps) => {
-    const yearStage = curr.userYearStage;
-    const existingGroup = acc.find(group => group.yearStage === yearStage);
+    const stOrFa = curr.stOrFa;
+    const existingGroup = acc.find(group => group.stOrFa === stOrFa);
     const person: UsersProps = {
         userName: curr.userName,
         userPhone: curr.userPhone,
+        stOrFa : curr.stOrFa,
         userYearStage: curr.userYearStage,
+        faLocation: curr.faLocation,
+        faEmail : curr.faEmail,
+        faPhone : curr.faPhone,
+        faField: curr.faField,
+        faDegree : curr.faDegree,
+        faCareer : curr.faCareer,
+        faNotice: curr.faNotice,
         userCoName: curr.userCoName,
         userCoSort: curr.userCoSort,
         userCoAddress: curr.userCoAddress,
@@ -73,14 +90,13 @@ export default function Faculty () {
         existingGroup.person.push(person);
     } else {
         acc.push({
-            yearStage: yearStage,
+          stOrFa: stOrFa === 'faculty' ? '정교수' : '겸임교수',
             person: [person]
         });
     }
     return acc;
   }, []);
 
-  
   return (
     <div className='students'>
 
@@ -90,23 +106,23 @@ export default function Faculty () {
         <div className="subpage__menu">
           <div className="subpage__menu__title">네트워크</div>
           <div className="subpage__menu__list">
-            <div
+          <div
               onClick={()=>{navigate('/network');}}
-              className="subpage__menu__item subpage__menu__item--on"
-            >
-              재학생
-            </div>
-            {/* <div 
-              onClick={()=>{navigate('/network/faculty');}}
               className="subpage__menu__item"
             >
+              재학생 및 졸업생
+            </div>
+            <div 
+              onClick={()=>{navigate('/network/faculty');}}
+              className="subpage__menu__item subpage__menu__item--on"
+            >
               교수진
-            </div> */}
+            </div>
           </div>
         </div>
 
         <div className="subpage__main">
-          <div className="subpage__main__title">재학생</div>
+          <div className="subpage__main__title">교수진</div>
 
           <div className="subpage__main__content">
             <div className="main__content">
@@ -116,13 +132,13 @@ export default function Faculty () {
                   className="person__wrap--category"
                   data-aos="fade-up"
                 >
-                  <div className="person__title">{item.yearStage}</div>
+                  <div className="person__title">{item.stOrFa}</div>
                   <div className="person__wrap--item">
                     {item.person.map((subItem:any, subIndex:any) => {
                       return (
                         <div key={subIndex} className="person__item"
                           onClick={()=>{
-                            navigate("/network/detail", {state : subItem});
+                            navigate("/network/detail", {state : {data:subItem, stOrFa : 'faculty'}});
                           }}
                         >
                           <div className="person__img--people">
@@ -146,7 +162,7 @@ export default function Faculty () {
                             <p>{subItem.userCoName}</p>
                           </div>
                           <div className="person__name">
-                            <p>대표 {subItem.userName}</p>
+                            <p>{subItem.userName} 교수</p>
                           </div>
                       </div>
                       )

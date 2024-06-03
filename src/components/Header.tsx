@@ -6,10 +6,11 @@ import { useNavigate } from 'react-router-dom';
 const Header: React.FC = () => {
   
   let navigate = useNavigate();
+  const stOrFa = sessionStorage.getItem('stOrFa');
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const menus = [
     { title: "소개", url:"/notice", links: [{title:"사이트소개", subUrl:"/notice"}] },
-    { title: "네트워크", url:"/network", links: [{title:"재학생", subUrl:"/network"}] },
+    { title: "네트워크", url:"/network", links: [{title:"재학생 및 졸업생", subUrl:"/network"}, {title:"교수진", subUrl:  "/network/faculty"}] },
     { title: "커뮤니티", url:"/community", links: [{title:"자유게시판", subUrl:"/community"}] },
     // { title: "나눔터", links: ["공지사항", "동문소식", "사진앨범"] },
     // { title: "기독교통합신학회", links: ["통합신학회 조직"] }
@@ -56,7 +57,11 @@ const Header: React.FC = () => {
                   onClick={handleLogout}
                 >로그아웃</div>
                 <div className="header-button"
-                  onClick={()=>{navigate('/mypage');}}
+                  onClick={()=>{
+                    stOrFa === 'student' 
+                    ? navigate('/mypage')
+                    : navigate('/mypage/faculty')
+                  }}
                 >마이페이지</div>
               </div>
               :

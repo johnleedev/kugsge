@@ -15,7 +15,7 @@ import { format } from "date-fns";
 import { CiCircleMinus } from "react-icons/ci";
 
 
-export default function Profile() {
+export default function ProfileFaculty() {
 
   let navigate = useNavigate();
   const userName = sessionStorage.getItem('userName');
@@ -38,6 +38,13 @@ export default function Profile() {
     userCoHomePage: string;
     userCoNotice: string;
     userCoImage : string;
+    faLocation : string;
+    faEmail : string;
+    faPhone : string;
+    faField: string;
+    faDegree : string;
+    faCareer : string;
+    faNotice: string;
   }
 
   const [currentTab, setCurrentTab] = useState(1);
@@ -54,23 +61,40 @@ export default function Profile() {
   const [logisterCoImage, setLogisterCoImage] = useState('');
   const [inputImage, setInputImage] = useState('');
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [faLocation, setFaLocation] = useState('');
+  const [faEmail, setFaEmail] = useState('');
+  const [faPhone, setFaPhone] = useState('');
+  const [faField, setFaField] = useState('');
+  const [faDegree, setFaDegree] = useState<string[]>([]);
+  const [faCareer, setFaCareer] = useState<string[]>([]);
+  const [faNotice, setFaNotice] = useState('');
 
   const fetchPosts = async () => {
-    const res = await axios.get(`${MainURL}/mypage/getprofile/${userId}/${userName}`)
+    const res = await axios.get(`${MainURL}/mypage/getprofilefaculty/${userId}/${userName}`)
     if (res) {
-      setUserProfile(res.data[0]);
-      setLogisterPhone(res.data[0].userPhone);
-      setLogisterCoName(res.data[0].userCoName);
-      setLogisterCoSort(res.data[0].userCoSort);
-      setLogisterCoAddress(res.data[0].userCoAddress);
-      setLogisterCoAddressRest(res.data[0].userCoAddressRest);
-      setLogisterCoPhone(res.data[0].userCoPhone);
-      setLogisterCoEmail(res.data[0].userCoEmail);
-      setLogisterCoHomePage(res.data[0].userCoHomePage);
-      setLogisterCoNotice(res.data[0].userCoNotice);
-      setLogisterCoImage(res.data[0].userCoImage);
-      const addressCopy = `${res.data[0].userCoAddress}`
-      addressAPI(addressCopy);
+      if (res.data[0]) {
+        setUserProfile(res.data[0]);
+        setLogisterPhone(res.data[0].userPhone);
+        setFaLocation(res.data[0].faLocation);
+        setFaPhone(res.data[0].faPhone);
+        setFaEmail(res.data[0].faEmail);
+        setFaField(res.data[0].faField);
+        setFaDegree(JSON.parse(res.data[0].faDegree));
+        setFaCareer(JSON.parse(res.data[0].faCareer));
+        setFaNotice(res.data[0].faNotice);
+        setLogisterCoName(res.data[0].userCoName);
+        setLogisterCoSort(res.data[0].userCoSort);
+        setLogisterCoAddress(res.data[0].userCoAddress);
+        setLogisterCoAddressRest(res.data[0].userCoAddressRest);
+        setLogisterCoPhone(res.data[0].userCoPhone);
+        setLogisterCoEmail(res.data[0].userCoEmail);
+        setLogisterCoHomePage(res.data[0].userCoHomePage);
+        setLogisterCoNotice(res.data[0].userCoNotice);
+        setLogisterCoImage(res.data[0].userCoImage);
+        const addressCopy = `${res.data[0].userCoAddress}`
+        addressAPI(addressCopy);
+      }
+      
     }
   };
 
@@ -112,7 +136,7 @@ export default function Profile() {
   // 수정 함수
   const handleRevise = async () => {
     await axios
-     .post(`${MainURL}/mypage/reviseprofile`, {
+     .post(`${MainURL}/mypage/reviseprofilefaculty`, {
         userId : userId,
         userName : userName,
         phone : logisterPhone,
@@ -123,7 +147,14 @@ export default function Profile() {
         coPhone : logisterCoPhone,
         coEmail : logisterCoEmail,
         coHomePage : logisterCoHomePage,
-        coNotice : logisterCoNotice
+        coNotice : logisterCoNotice,
+        faLocation : faLocation,
+        faEmail : faEmail,
+        faPhone : faPhone,
+        faField : faField,
+        faDegree : JSON.stringify(faDegree),
+        faCareer : JSON.stringify(faCareer),
+        faNotice : faNotice
      })
      .then((res)=>{
        if (res.data) {
@@ -159,7 +190,6 @@ export default function Profile() {
       const regex = acceptedFiles[0].name.replace(regexCopy, '');
 
       const copy = await new File(resizedFiles, `${date}_${userId}_${regex}`, { type: acceptedFiles[0].type });
-      console.log(copy);
       setImageFiles([copy]);
       setInputImage(copy.name);
     } catch (error) {
@@ -178,7 +208,7 @@ export default function Profile() {
       userCoImage : inputImage,
     }
     axios 
-      .post(`${MainURL}/mypage/changeprofileimage`, formData, {
+      .post(`${MainURL}/mypage/changeprofilefacultyimage`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -209,7 +239,7 @@ export default function Profile() {
   // 사진 삭제 함수 ----------------------------------------------
   const deleteImage = async () => {
     axios 
-      .post(`${MainURL}/mypage/deleteprofileimage`, {
+      .post(`${MainURL}/mypage/deleteprofilefacultyimage`, {
         userId : userId,
         userName : userName,
         userCoImage : logisterCoImage
@@ -227,6 +257,10 @@ export default function Profile() {
   };
   
   return (
+    (userProfile === null || userProfile === undefined) 
+    ? 
+    <Loading/>
+    :
     <div className='mypage'>
 
       <div className="inner">
@@ -269,10 +303,12 @@ export default function Profile() {
                   <h3>개인연락처</h3>
                   <p>{userProfile?.userPhone}</p>
                 </div>
-                <div className="textrow">
-                  <h3>기수</h3>
-                  <p>{userProfile?.userYearStage}</p>
-                </div>
+                {  stOrFa === 'both' &&
+                  <div className="textrow">
+                    <h3>기수</h3>
+                    <p>{userProfile?.userYearStage}</p>
+                  </div>
+                }
 
                 <div className='divider'></div>
 
@@ -355,49 +391,114 @@ export default function Profile() {
 
                 <div className='divider'></div>
 
+                { stOrFa === 'faculty' &&
+                <>
+                  <div className="textrow">
+                    <h3>연구실위치</h3>
+                    <p>{userProfile?.faLocation}</p>
+                  </div>
+                  <div className="textrow">
+                    <h3>연구실번호</h3>
+                    <p>{userProfile?.faPhone}</p>
+                  </div>
+                </>
+                }  
+                
                 <div className="textrow">
-                  <h3>업체명</h3>
-                  <p>{userProfile?.userCoName}</p>
-                </div>
-                <div className="textrow">
-                  <h3>업태/종목</h3>
-                  <p>{userProfile?.userCoSort}</p>
-                </div>
-                <div className="textrow">
-                  <h3>업체주소</h3>
-                  <p>{userProfile?.userCoAddress} {userProfile?.userCoAddressRest}</p>
-                </div>
-                <div className="textrow">
-                  <h3>업체연락처</h3>
-                  <p>{userProfile?.userCoPhone}</p>
-                </div>
-                <div className="textrow">
-                  <h3>업체이메일</h3>
-                  <p>{userProfile?.userCoEmail}</p>
-                </div>
-                <div className="textrow">
-                  <h3>업체홈페이지</h3>
-                  <p>{userProfile?.userCoHomePage}</p>
-                </div>
-                <div className="textrow">
-                  <h3>업체소개</h3>
-                  <p>{userProfile?.userCoNotice === 'null' ? '' : userProfile?.userCoNotice}</p>
+                  <h3>이메일</h3>
+                  <p>{userProfile?.faEmail}</p>
                 </div>
 
+                <div className='divider2'></div>
+
+                <div className="textrow">
+                  <h3>연구분야</h3>
+                  <p>{userProfile?.faField}</p>
+                </div>
+                <div className="textrow">
+                  <h3>학위</h3>
+                  <p>{
+                    <>
+                    {
+                      faDegree.map((item:any, index:any)=>{
+                        return(
+                          <p key={index}>{item}</p>
+                        )
+                      })
+                    }
+                    </>
+                  }</p>
+                </div>
+                <div className="textrow">
+                  <h3>경력 및 활동</h3>
+                  <p>{
+                    <>
+                    {
+                      faCareer.map((item:any, index:any)=>{
+                        return(
+                          <p key={index}>{item}</p>
+                        )
+                      })
+                    }
+                    </>
+                  }</p>
+                </div>
+
+                <div className="textrow">
+                  <h3>기타소개</h3>
+                  <p>{userProfile?.faNotice === 'null' ? '' : userProfile?.faNotice}</p>
+                </div>
+
+                { stOrFa === 'both' &&
+                <>
+                  <div className='divider'></div>
                 
+                  <div className="textrow">
+                    <h3>업체명</h3>
+                    <p>{userProfile?.userCoName}</p>
+                  </div>
+                  <div className="textrow">
+                    <h3>업태/종목</h3>
+                    <p>{userProfile?.userCoSort}</p>
+                  </div>
+                  <div className="textrow">
+                    <h3>업체주소</h3>
+                    <p>{userProfile?.userCoAddress} {userProfile?.userCoAddressRest}</p>
+                  </div>
+                  <div className="textrow">
+                    <h3>업체연락처</h3>
+                    <p>{userProfile?.userCoPhone}</p>
+                  </div>
+                  <div className="textrow">
+                    <h3>업체이메일</h3>
+                    <p>{userProfile?.userCoEmail}</p>
+                  </div>
+                  <div className="textrow">
+                    <h3>업체홈페이지</h3>
+                    <p>{userProfile?.userCoHomePage}</p>
+                  </div>
+                  <div className="textrow">
+                    <h3>업체소개</h3>
+                    <p>{userProfile?.userCoNotice === 'null' ? '' : userProfile?.userCoNotice}</p>
+                  </div>
+
+                </>
+                }
                 <div className="reviseBtn"
                   onClick={()=>{setCurrentTab(2);}}
                 >
                   <p>프로필 수정하기</p>
                 </div>
 
-                <div className="bottomarea">
-                  <div className="addressbar">
-                    <p>{userProfile?.userCoAddress}</p>
+                {  stOrFa === 'both' &&
+                  <div className="bottomarea">
+                    <div className="addressbar">
+                      <p>{userProfile?.userCoAddress}</p>
+                    </div>
+                    <div ref={mapElement} style={{ minHeight: '300px'}} />
                   </div>
-                  <div ref={mapElement} style={{ minHeight: '300px'}} />
-                </div>
-                
+                }
+
               </div>
             </div>
             :
@@ -410,68 +511,183 @@ export default function Profile() {
                   <input value={logisterPhone} className="inputdefault" type="text" 
                     onChange={(e) => {setLogisterPhone(e.target.value)}}/>
                 </div>
+
+                { stOrFa === 'faculty' &&
+                <>
+                  <div className="inputbox">
+                    <p>연구실위치</p>
+                    <input value={faLocation} className="inputdefault" type="text" 
+                      onChange={(e) => {setFaLocation(e.target.value)}}/>
+                  </div>
+                  <div className="inputbox">
+                    <p>연구실번호</p>
+                    <input value={faPhone} className="inputdefault" type="text" 
+                      onChange={(e) => {setFaPhone(e.target.value)}}/>
+                  </div>
+                </>
+                }
                 <div className="inputbox">
-                  <p>업체명</p>
-                  <input value={logisterCoName} className="inputdefault" type="text" 
-                    onChange={(e) => {setLogisterCoName(e.target.value)}}/>
+                  <p>이메일</p>
+                  <input value={faEmail} className="inputdefault" type="text" 
+                    onChange={(e) => {setFaEmail(e.target.value)}}/>
                 </div>
                 <div className="inputbox">
-                  <p>업태/종목</p>
-                  <input value={logisterCoSort} className="inputdefault" type="text" 
-                    onChange={(e) => {setLogisterCoSort(e.target.value)}}/>
+                  <p>연구분야</p>
+                  <input value={faField} className="inputdefault" type="text" 
+                    onChange={(e) => {setFaField(e.target.value)}}/>
                 </div>
                 <div className="inputbox">
                   <div className="inputbox-btncover">
-                    <p>업체주소</p>
+                    <p>학위</p>
                     <div className="addBtn"
-                      onClick={()=>{setIsViewAddressTab(true)}}
-                    >주소찾기</div>
-                  </div>
-                  { isViewAddressTab &&
-                    <DaumPostcode
-                      style={{
-                        width: '400px',
-                        height: '400px',
+                      onClick={()=>{
+                        const copy = [...faDegree, ""];
+                        setFaDegree(copy);
                       }}
-                      onComplete={onCompletePost}
-                    ></DaumPostcode>
+                    >입력란추가</div>
+                  </div>
+                  {
+                    faDegree.map((item:any, itemindex:any)=>{
+                      return (
+                        <div className='subRow'>
+                          <input value={item} className="inputdefault" type="text" 
+                            onChange={(e) => {
+                              const copy = [...faDegree];
+                              copy[itemindex] = e.target.value;
+                              setFaDegree(copy)}
+                            }/>
+                            <div onClick={()=>{
+                              const copy = [...faDegree];
+                              const filter = copy.filter((_, index) => index !== itemindex);
+                              setFaDegree(filter);
+                            }}>
+                              <CiCircleMinus color='#FF0000' size={20}/>
+                            </div>  
+                        </div>
+                      )
+                    })
                   }
-                  
-                  <input value={logisterCoAddress} className="inputdefault" type="text" 
-                      onChange={(e) => {setLogisterCoAddress(e.target.value)}}
-                    />
-                  <input value={logisterCoAddressRest} className="inputdefault" type="text" placeholder="나머지주소"
-                    onChange={(e) => {setLogisterCoAddressRest(e.target.value)}}
-                  />
                 </div>
                 <div className="inputbox">
-                  <p>업체번호</p>
-                  <input value={logisterCoPhone} className="inputdefault" type="text" 
-                    onChange={(e) => {setLogisterCoPhone(e.target.value)}}/>
-                </div>
-                <div className="inputbox">
-                  <p>업체이메일</p>
-                  <input value={logisterCoEmail} className="inputdefault" type="text" 
-                    onChange={(e) => {setLogisterCoEmail(e.target.value)}}/>
-                </div>
-                <div className="inputbox">
-                  <p>업체홈페이지</p>
-                  <input value={logisterCoHomePage} className="inputdefault" type="text" 
-                    onChange={(e) => {setLogisterCoHomePage(e.target.value)}}/>
+                  <div className="inputbox-btncover">
+                    <p>경력 및 활동</p>
+                    <div className="addBtn"
+                      onClick={()=>{
+                        const copy = [...faCareer, ""];
+                        setFaCareer(copy);
+                      }}
+                    >입력란추가</div>
+                  </div>
+                  {
+                    faCareer.map((item:any, itemindex:any)=>{
+                      return (
+                        <div className='subRow'>
+                          <input value={item} className="inputdefault" type="text" 
+                            onChange={(e) => {
+                              const copy = [...faCareer];
+                              copy[itemindex] = e.target.value;
+                              setFaCareer(copy)}
+                            }/>
+                            <div onClick={()=>{
+                              const copy = [...faCareer];
+                              const filter = copy.filter((_, index) => index !== itemindex);
+                              setFaCareer(filter);
+                            }}>
+                              <CiCircleMinus color='#FF0000' size={20}/>
+                            </div>  
+                        </div>
+                      )
+                    })
+                  }
                 </div>
                 <div className="inputbox" style={{}}>
-                  <p>업체소개</p>
+                  <p>기타소개</p>
                   <textarea 
                     className="textarea"
-                    value={logisterCoNotice}
-                    onChange={(e)=>{setLogisterCoNotice(e.target.value)}}
+                    value={faNotice}
+                    onChange={(e)=>{setFaNotice(e.target.value)}}
                   />
                 </div>
+
+                { stOrFa === 'both' &&
+                <>
+                  <div style={{width:'100%', height:'2px', backgroundColor:'#EAEAEA', margin:'10px 0'}}></div>
+               
+                  <div className="inputbox">
+                    <p>업체명</p>
+                    <input value={logisterCoName} className="inputdefault" type="text" 
+                      onChange={(e) => {setLogisterCoName(e.target.value)}}/>
+                  </div>
+                  <div className="inputbox">
+                    <p>업태/종목</p>
+                    <input value={logisterCoSort} className="inputdefault" type="text" 
+                      onChange={(e) => {setLogisterCoSort(e.target.value)}}/>
+                  </div>
+                  <div className="inputbox">
+                    <div className="inputbox-btncover">
+                      <p>업체주소</p>
+                      <div className="addBtn"
+                        onClick={()=>{setIsViewAddressTab(true)}}
+                      >주소찾기</div>
+                    </div>
+                    { isViewAddressTab &&
+                      <DaumPostcode
+                        style={{
+                          width: '400px',
+                          height: '400px',
+                        }}
+                        onComplete={onCompletePost}
+                      ></DaumPostcode>
+                    }
+                    
+                    <input value={logisterCoAddress} className="inputdefault" type="text" 
+                        onChange={(e) => {setLogisterCoAddress(e.target.value)}}
+                      />
+                    <input value={logisterCoAddressRest} className="inputdefault" type="text" placeholder="나머지주소"
+                      onChange={(e) => {setLogisterCoAddressRest(e.target.value)}}
+                    />
+                  </div>
+                  <div className="inputbox">
+                    <p>업체번호</p>
+                    <input value={logisterCoPhone} className="inputdefault" type="text" 
+                      onChange={(e) => {setLogisterCoPhone(e.target.value)}}/>
+                  </div>
+                  <div className="inputbox">
+                    <p>업체이메일</p>
+                    <input value={logisterCoEmail} className="inputdefault" type="text" 
+                      onChange={(e) => {setLogisterCoEmail(e.target.value)}}/>
+                  </div>
+                  <div className="inputbox">
+                    <p>업체홈페이지</p>
+                    <input value={logisterCoHomePage} className="inputdefault" type="text" 
+                      onChange={(e) => {setLogisterCoHomePage(e.target.value)}}/>
+                  </div>
+                  <div className="inputbox" style={{}}>
+                    <p>업체소개</p>
+                    <textarea 
+                      className="textarea"
+                      value={logisterCoNotice}
+                      onChange={(e)=>{setLogisterCoNotice(e.target.value)}}
+                    />
+                  </div>
+                </>
+                }
+                
                 <div className="reviseBtn" 
                   onClick={handleRevise}
                 >
                   <p>수정완료</p>
                 </div>
+
+                <div style={{width:'100%', height:'2px', backgroundColor:'#EAEAEA', margin:'10px 0'}}></div>
+
+                {/* <div className="reviseBtn" 
+                  style={{border:'1px solid red'}}
+                  onClick={handleRevise}
+                >
+                  <p>회원탈퇴</p>
+                </div> */}
+
               </div>
             </div>
           }

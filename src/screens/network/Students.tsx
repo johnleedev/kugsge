@@ -45,6 +45,11 @@ export default function Students() {
       yearStagesCopy.unshift("전체");
       setYearStages(yearStagesCopy);
       copy.sort((a, b) => {
+        const numA = parseInt(a.userYearStage);
+        const numB = parseInt(b.userYearStage);
+        if (numA !== numB) {
+          return numB - numA;
+        }
         const aHasValue = a.userCoName !== "" && a.userCoImage !== "" && a.userCoImage !== null;
         const bHasValue = b.userCoName !== "" && b.userCoImage !== "" && b.userCoImage !== null;
         if (aHasValue && !bHasValue) return -1;
@@ -56,6 +61,8 @@ export default function Students() {
       setUsers(copy);
     }
   };
+
+  
 
   useEffect(() => {
 		fetchPosts();
@@ -135,19 +142,19 @@ export default function Students() {
               onClick={()=>{navigate('/network');}}
               className="subpage__menu__item subpage__menu__item--on"
             >
-              재학생
+              재학생 및 졸업생
             </div>
-            {/* <div 
+            <div 
               onClick={()=>{navigate('/network/faculty');}}
               className="subpage__menu__item"
             >
               교수진
-            </div> */}
+            </div>
           </div>
         </div>
 
         <div className="subpage__main">
-          <div className="subpage__main__title">재학생</div>
+          <div className="subpage__main__title">재학생 및 졸업생</div>
           <div className="subpage__main__searchbar">
             <select 
               value={selectedYearStage}
@@ -190,7 +197,7 @@ export default function Students() {
                       return (
                         <div key={subIndex} className="person__item"
                           onClick={()=>{
-                            navigate("/network/detail", {state : subItem});
+                            navigate("/network/detail", {state : {data:subItem, stOrFa : 'student'}});
                           }}
                         >
                           <div className="person__img--people">

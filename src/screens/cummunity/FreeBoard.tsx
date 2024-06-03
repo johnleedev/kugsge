@@ -13,6 +13,7 @@ export default function FreeBoard() {
     id : number;
     userName : string;
     userYearStage : string;
+    stOrFa: string;
     title : string;
     content : string;
     date : string;
