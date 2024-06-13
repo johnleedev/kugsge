@@ -42,14 +42,19 @@ export default function Post () {
           return resizingBlob;
         })
       );
+      
+      const regexCopy = /[^a-zA-Z0-9!@#$%^&*()\-_=+\[\]{}|;:'",.<>]/g;
+
       const fileCopies = resizedFiles.map((resizedFile, index) => {
-        return new File([resizedFile], `${date}_${userId}_${index}`, {
+        const regex = resizedFile.name.replace(regexCopy, '');
+        return new File([resizedFile], `${date}_${userId}_${regex}`, {
           type: acceptedFiles[index].type,
         });
       });
       setImageFiles(fileCopies);
       const imageNames = acceptedFiles.map((file, index) => {
-        return `"${date}_${userId}_${index}"`;
+        const regex = file.name.replace(regexCopy, '');
+        return `"${date}_${userId}_${regex}"`;
       });
       setInputImages(imageNames);
       setImageLoading(false);

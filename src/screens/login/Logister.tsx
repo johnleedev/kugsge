@@ -51,6 +51,7 @@ export default function Logister(props:any) {
 
   const [logisterYearStage, setLogisterYearStage] = useState('21기');
   const [logisterCoName, setLogisterCoName] = useState('');
+  const [logisterCoDuty, setLogisterCoDuty] = useState('');
   const [logisterCoSort, setLogisterCoSort] = useState('');
   const [logisterCoAddress, setLogisterCoAddress] = useState('');
   const [logisterCoAddressRest, setLogisterCoAddressRest] = useState('');
@@ -76,8 +77,18 @@ export default function Logister(props:any) {
   };
 
   // 아이디 중복 체크
-  const handleCheckId = async (data:any) => {
+  const handleCheckId = async () => {
     const res = await axios.get(`${MainURL}/login/logincheckid/${logisterId}`)
+    if (res.data) { 
+      alert('중복된 아이디가 있습니다.')
+      setLogisterIdCheck(false);
+    } else {
+      alert('사용할수 있는 아이디입나다.')
+      setLogisterIdCheck(true);
+    }
+  };
+  const handleCheckIdFaculty = async () => {
+    const res = await axios.get(`${MainURL}/login/logincheckidfaculty/${logisterId}`)
     if (res.data) { 
       alert('중복된 아이디가 있습니다.')
       setLogisterIdCheck(false);
@@ -125,6 +136,7 @@ export default function Logister(props:any) {
         stOrFa : studentOrFaculty,
         yearStage : logisterYearStage,
         coName : logisterCoName,
+        coDuty : logisterCoDuty,
         coSort : logisterCoSort,
         coAddress : logisterCoAddress,
         coAddressRest : logisterCoAddressRest,
@@ -158,6 +170,7 @@ export default function Logister(props:any) {
         stOrFa : studentOrFaculty,
         yearStage : logisterYearStage,
         coName : logisterCoName,
+        coDuty : logisterCoDuty,
         coSort : logisterCoSort,
         coAddress : logisterCoAddress,
         coAddressRest : logisterCoAddressRest,
@@ -299,6 +312,54 @@ export default function Logister(props:any) {
               <div className="rowbar"></div>
             </div>
 
+            <div className="inputbox">
+              <p>구분 <span>*</span></p>
+              <div className="checkInputCover">
+                <div className='checkInput'>
+                  <input className="input" type="checkbox"
+                    checked={studentOrFaculty === 'student'}
+                    onChange={()=>{setStudentOrFaculty('student')}}
+                  />
+                  <h5>학생</h5>
+                </div>
+                <div className='checkInput' style={{marginLeft:'10px'}}>
+                  <input className="input" type="checkbox"
+                    checked={studentOrFaculty === 'faculty'}
+                    onChange={()=>{setStudentOrFaculty('faculty')}}
+                  />
+                  <h5>교수진</h5>
+                </div>
+              </div>
+            </div>
+
+            {(studentOrFaculty === 'faculty' || studentOrFaculty === 'both') &&
+            <div className="inputbox">
+              <p>구분2 <span>*</span></p>
+              <div className="checkInputCover">
+                <div className='checkInput'>
+                  <input className="input" type="checkbox"
+                    checked={facultySort === 'faculty'}
+                    onChange={()=>{
+                      setFacultySort('faculty');
+                      setStudentOrFaculty('faculty');
+                    }}
+                  />
+                  <h5>정교수</h5>
+                </div>
+                <div className='checkInput' style={{marginLeft:'10px'}}>
+                  <input className="input" type="checkbox"
+                    checked={facultySort === 'both'}
+                    onChange={()=>{
+                      setFacultySort('both');
+                      setStudentOrFaculty('both');
+                    }}
+                  />
+                  <h5>겸임교수</h5>
+                </div>
+              </div>
+            </div>
+            }
+
             <h2>필수항목</h2>
             <div className="inputbox">
               <div className="inputbox-btncover">
@@ -316,7 +377,11 @@ export default function Logister(props:any) {
                   </div>
                 }
                 <div className="addBtn"
-                  onClick={handleCheckId}
+                  onClick={()=>{
+                    studentOrFaculty === 'student'
+                    ? handleCheckId()
+                    : handleCheckIdFaculty()
+                  }}
                 >중복확인</div>
                 </>
               </div>
@@ -366,53 +431,6 @@ export default function Logister(props:any) {
                 onChange={(e) => {setLogisterPhone(e.target.value)}}/>
             </div>
 
-            <div className="inputbox">
-              <p>구분 <span>*</span></p>
-              <div className="checkInputCover">
-                <div className='checkInput'>
-                  <input className="input" type="checkbox"
-                    checked={studentOrFaculty === 'student'}
-                    onChange={()=>{setStudentOrFaculty('student')}}
-                  />
-                  <h5>학생</h5>
-                </div>
-                <div className='checkInput' style={{marginLeft:'10px'}}>
-                  <input className="input" type="checkbox"
-                    checked={studentOrFaculty === 'faculty'}
-                    onChange={()=>{setStudentOrFaculty('faculty')}}
-                  />
-                  <h5>교수진</h5>
-                </div>
-              </div>
-            </div>
-
-            {(studentOrFaculty === 'faculty' || studentOrFaculty === 'both') &&
-            <div className="inputbox">
-              <p>구분2 <span>*</span></p>
-              <div className="checkInputCover">
-                <div className='checkInput'>
-                  <input className="input" type="checkbox"
-                    checked={facultySort === 'faculty'}
-                    onChange={()=>{
-                      setFacultySort('faculty');
-                      setStudentOrFaculty('faculty');
-                    }}
-                  />
-                  <h5>정교수</h5>
-                </div>
-                <div className='checkInput' style={{marginLeft:'10px'}}>
-                  <input className="input" type="checkbox"
-                    checked={facultySort === 'both'}
-                    onChange={()=>{
-                      setFacultySort('both');
-                      setStudentOrFaculty('both');
-                    }}
-                  />
-                  <h5>겸임교수</h5>
-                </div>
-              </div>
-            </div>
-            }
 
             {
               (studentOrFaculty === 'student' || facultySort === 'both') &&
@@ -557,6 +575,11 @@ export default function Logister(props:any) {
                 <p>업체명</p>
                 <input value={logisterCoName} className={logisterCoName === '' ? "inputdefault" : "inputdefault select" } type="text" 
                   onChange={(e) => {setLogisterCoName(e.target.value)}}/>
+              </div>
+              <div className="inputbox">
+                <p>직책</p>
+                <input value={logisterCoDuty} className={logisterCoDuty === '' ? "inputdefault" : "inputdefault select" } type="text" 
+                  onChange={(e) => {setLogisterCoDuty(e.target.value)}}/>
               </div>
               <div className="inputbox">
                 <p>업태/종목</p>

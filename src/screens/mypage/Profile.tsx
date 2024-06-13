@@ -30,6 +30,7 @@ export default function Profile() {
     stOrFa: string;
     userYearStage : string;
     userCoName: string;
+    userCoDuty : string;
     userCoSort : string;
     userCoAddress: string;
     userCoAddressRest: string;
@@ -44,6 +45,7 @@ export default function Profile() {
   const [userProfile, setUserProfile] = useState<ProfileProps>();
   const [logisterPhone, setLogisterPhone] = useState('');
   const [logisterCoName, setLogisterCoName] = useState('');
+  const [logisterCoDuty, setLogisterCoDuty] = useState('');
   const [logisterCoSort, setLogisterCoSort] = useState('');
   const [logisterCoAddress, setLogisterCoAddress] = useState('');
   const [logisterCoAddressRest, setLogisterCoAddressRest] = useState('');
@@ -61,6 +63,7 @@ export default function Profile() {
       setUserProfile(res.data[0]);
       setLogisterPhone(res.data[0].userPhone);
       setLogisterCoName(res.data[0].userCoName);
+      setLogisterCoDuty(res.data[0].userCoDuty);
       setLogisterCoSort(res.data[0].userCoSort);
       setLogisterCoAddress(res.data[0].userCoAddress);
       setLogisterCoAddressRest(res.data[0].userCoAddressRest);
@@ -117,6 +120,7 @@ export default function Profile() {
         userName : userName,
         phone : logisterPhone,
         coName : logisterCoName,
+        coDuty : logisterCoDuty,
         coSort : logisterCoSort,
         coAddress : logisterCoAddress,
         coAddressRest : logisterCoAddressRest,
@@ -330,7 +334,7 @@ export default function Profile() {
                     </div>
                     <div className="titlebox">
                       <h3>{userProfile?.userCoName}</h3>
-                      <p>대표: {userProfile?.userName} ({userProfile?.userYearStage})</p>
+                      <p>{userProfile?.userName} {userProfile?.userCoDuty} ({userProfile?.userYearStage})</p>
                     </div>
                   </div>
                   <div className="sortcover">
@@ -358,6 +362,10 @@ export default function Profile() {
                 <div className="textrow">
                   <h3>업체명</h3>
                   <p>{userProfile?.userCoName}</p>
+                </div>
+                <div className="textrow">
+                  <h3>직책</h3>
+                  <p>{userProfile?.userCoDuty}</p>
                 </div>
                 <div className="textrow">
                   <h3>업태/종목</h3>
@@ -414,6 +422,11 @@ export default function Profile() {
                   <p>업체명</p>
                   <input value={logisterCoName} className="inputdefault" type="text" 
                     onChange={(e) => {setLogisterCoName(e.target.value)}}/>
+                </div>
+                <div className="inputbox">
+                  <p>직책</p>
+                  <input value={logisterCoDuty} className="inputdefault" type="text" 
+                    onChange={(e) => {setLogisterCoDuty(e.target.value)}}/>
                 </div>
                 <div className="inputbox">
                   <p>업태/종목</p>

@@ -31,6 +31,7 @@ export default function Faculty () {
     faCareer : string;
     faNotice: string;
     userCoName: string;
+    userCoDuty: string;
     userCoSort : string;
     userCoAddress: string;
     userCoAddressRest: string;
@@ -77,6 +78,7 @@ export default function Faculty () {
         faCareer : curr.faCareer,
         faNotice: curr.faNotice,
         userCoName: curr.userCoName,
+        userCoDuty: curr.userCoDuty,
         userCoSort: curr.userCoSort,
         userCoAddress: curr.userCoAddress,
         userCoAddressRest: curr.userCoAddressRest,

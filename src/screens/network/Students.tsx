@@ -23,6 +23,7 @@ export default function Students() {
     userPhone: string;
     userYearStage: string;
     userCoName: string;
+    userCoDuty: string;
     userCoSort : string;
     userCoAddress: string;
     userCoAddressRest: string;
@@ -108,6 +109,7 @@ export default function Students() {
         userPhone: curr.userPhone,
         userYearStage: curr.userYearStage,
         userCoName: curr.userCoName,
+        userCoDuty: curr.userCoDuty,
         userCoSort: curr.userCoSort,
         userCoAddress: curr.userCoAddress,
         userCoAddressRest: curr.userCoAddressRest,
@@ -221,7 +223,7 @@ export default function Students() {
                             <p>{subItem.userCoName}</p>
                           </div>
                           <div className="person__name">
-                            <p>대표 {subItem.userName}</p>
+                            <p>{subItem.userName} {subItem.userCoDuty}</p>
                           </div>
                       </div>
                       )

@@ -37,6 +37,7 @@ export default function Detail() {
     faCareer : string;
     faNotice: string;
     userCoName: string;
+    userCoDuty: string;
     userCoSort : string;
     userCoAddress: string;
     userCoAddressRest: string;
@@ -126,7 +127,7 @@ export default function Detail() {
                   <h3>{userProfile?.userCoName}</h3>
                   {
                     stOrFa === 'student' 
-                    ? <p>대표: {userProfile?.userName} ({userProfile?.userYearStage})</p>
+                    ? <p>{userProfile?.userName} {userProfile?.userCoDuty} ({userProfile?.userYearStage})</p>
                     : <p>{userProfile?.userName} 교수</p>
                   }
                   
@@ -238,6 +239,10 @@ export default function Detail() {
               <div className="textrow">
                 <h3>업체명</h3>
                 <p>{userProfile?.userCoName}</p>
+              </div>
+              <div className="textrow">
+                <h3>직책</h3>
+                <p>{userProfile?.userCoDuty}</p>
               </div>
               <div className="textrow">
                 <h3>업태/종목</h3>

@@ -90,7 +90,7 @@ export default function FreeBoard() {
 
         {/* 왼쪽 메뉴바 */}
         <div className="subpage__menu">
-          <div className="subpage__menu__title">네트워크</div>
+          <div className="subpage__menu__title">커뮤니티</div>
           <div className="subpage__menu__list">
             <div
               onClick={()=>{navigate('/community');}}
