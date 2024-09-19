@@ -23,7 +23,7 @@ export default function Main(props:any) {
   }
      
   useEffect(()=>{
-    appUseCount();
+    // appUseCount();
   }, []); 
 
 

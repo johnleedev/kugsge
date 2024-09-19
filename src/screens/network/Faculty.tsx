@@ -4,6 +4,7 @@ import Footer from '../../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainURL from '../../MainURL';
+import UserFacultyData from '../../UserFacultyData';
 
 export default function Faculty () {
 
@@ -42,14 +43,11 @@ export default function Faculty () {
     userCoImage :string;
   }
 
-  const [users, setUsers] = useState<UsersProps[]>([]);
+  const [users, setUsers] = useState<any>([]);
   const fetchPosts = async () => {
-    const res = await axios.get(`${MainURL}/network/getfaculty`)
-    if (res) {
-      const copy: UsersProps[] = res.data;
-      const filter = copy.sort((a:any, b:any)=> b.stOrFa.localeCompare(a.stOrFa));
-      setUsers(filter);
-    }
+    const copy = UserFacultyData;
+    const filter = copy.sort((a:any, b:any)=> b.stOrFa.localeCompare(a.stOrFa));
+    setUsers(filter);
   };
 
   useEffect(() => {

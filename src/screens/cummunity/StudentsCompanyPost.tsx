@@ -11,7 +11,7 @@ import Loading from '../../components/Loading';
 import { CiCircleMinus } from "react-icons/ci";
 import { format } from "date-fns";
 
-export default function Post () {
+export default function StudentsCompanyPost () {
 
   let navigate = useNavigate();
 
@@ -20,9 +20,27 @@ export default function Post () {
   const userYearStage = sessionStorage.getItem('userYearStage');
   const stOrFa = sessionStorage.getItem('stOrFa');
 
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [inputImages, setInputImages] = useState<string[]>(['']);
+  interface ContentProps {
+    subTitle : string;
+    subContent : string;
+  }
+  const [companyName, setCompanyName] = useState('');
+  const [content, setContent] = useState<ContentProps[]>([
+    {subTitle:"대표님의 회사는 어떤 회사인가요?", subContent:""},
+    {subTitle:"회사를 운영하면서 가장 기억에 남는 에피소드가 있다면?", subContent:""},
+    {subTitle:"지금까지 회사를 운영해온 대표님의 철학이나 노하우?", subContent:""},
+    {subTitle:"최근 가장 기억에 남는 프로젝트?", subContent:""},
+    {subTitle:"대표님의 직무에 있어서 가장 필요한 역량이 있다면?", subContent:""},
+    {subTitle:"대표님이 몸담고 있는 업계의 앞으로의 흐름?", subContent:""},
+    {subTitle:"최종적인 목표와 앞으로의 계획?", subContent:""},
+    {subTitle:"현재 그리고 미래의 창업대학원 원우들에게 한마디?", subContent:""}
+  ]);
+  const [link, setLink] = useState('');
+  interface ImageNoticeProps {
+    imageName: string; 
+    title: string;
+  }
+  const [inputImages, setInputImages] = useState<ImageNoticeProps[]>([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
 
   // 이미지 첨부 함수 ----------------------------------------------
@@ -56,7 +74,10 @@ export default function Post () {
         const regex = file.name.replace(regexCopy, '');
         return `${date}_${userId}_${regex}`;
       });
-      setInputImages(imageNames);
+      const updatedImageNames = imageNames.map((imageName) => ({
+        imageName, title: 'main'
+      }));
+      setInputImages(updatedImageNames);
       setImageLoading(false);
     } catch (error) {
       console.error('이미지 리사이징 중 오류 발생:', error);
@@ -80,14 +101,15 @@ export default function Post () {
     });
   
     const getParams = {
-      sort : 'post',
+      sort : 'scpost',
       userId : userId,
       userName : userName,
       userYearStage : userYearStage,
       stOrFa : stOrFa,
-      title : title,
-      content: content,
-      postImage : inputImages
+      companyName: companyName,
+      content: JSON.stringify(content),
+      link: link,
+      postImage : JSON.stringify(inputImages)
     }
 
     axios 
@@ -108,6 +130,13 @@ export default function Post () {
       })
   };
 
+
+  const postOptions = [
+    { value: 'main', label: 'main' },
+    { value: 'company', label: 'company' },
+    { value: 'item', label: 'item' },
+  ]
+
   return (
     <div className='community'>
 
@@ -119,22 +148,22 @@ export default function Post () {
           <div className="subpage__menu__list">
             <div
               onClick={()=>{navigate('/community');}}
-              className="subpage__menu__item subpage__menu__item--on"
+              className="subpage__menu__item"
             >
               자유게시판
             </div>
-            {/* <div
+            <div
               onClick={()=>{navigate('/community/studentscompany');}}
-              className="subpage__menu__item"
+              className="subpage__menu__item subpage__menu__item--on"
             >
               동문기업소개
-            </div> */}
+            </div>
           </div>
         </div>
 
         <div className="subpage__main">
           <div className="subpage__main__title">
-            <h3>자유게시판</h3>
+            <h3>동문기업소개</h3>
             <div className='postBtnbox'
               style={{marginRight:'10px'}}
               onClick={()=>{navigate('/community');}}
@@ -159,22 +188,41 @@ export default function Post () {
             </div>
             <div className="addPostBox">
               <div style={{display:'flex', justifyContent:'space-between', alignItems:'end'}}>
-                <p>제목</p>
+                <p>업체명</p>
+                <h5 style={{fontSize:'12px'}}>* 최대 100자</h5>
+              </div>
+              <input value={companyName} className="inputdefault" type="text" 
+                maxLength={100}
+                onChange={(e) => {setCompanyName(e.target.value)}}/>
+              {
+                content.map((item:any, index:any)=>{
+                  return (
+                    <div key={index}>
+                      <div style={{display:'flex', justifyContent:'space-between', alignItems:'end'}}>
+                        <p>{item.subTitle}</p>
+                        <h5 style={{fontSize:'12px'}}>* 최대 300자</h5>
+                      </div>
+                      <textarea 
+                        className="textarea textareapost2"
+                        value={item.subContent}
+                        maxLength={300}
+                        onChange={(e)=>{
+                          const copy = [...content];
+                          copy[index].subContent = e.target.value;
+                          setContent(copy);
+                        }}
+                      />
+                    </div>
+                  )
+                })
+              }
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'end'}}>
+                <p>홈페이지or제품링크</p>
                 <h5 style={{fontSize:'12px'}}>* 최대 200자</h5>
               </div>
-              <input value={title} className="inputdefault" type="text" 
+              <input value={link} className="inputdefault" type="text" 
                 maxLength={200}
-                onChange={(e) => {setTitle(e.target.value)}}/>
-              <div style={{display:'flex', justifyContent:'space-between', alignItems:'end'}}>
-                <p>본문</p>
-                <h5 style={{fontSize:'12px'}}>* 최대 2000자</h5>
-              </div>
-              <textarea 
-                className="textarea textareapost"
-                value={content}
-                maxLength={2000}
-                onChange={(e)=>{setContent(e.target.value)}}
-              />
+                onChange={(e) => {setLink(e.target.value)}}/>
               <p>사진 첨부</p>
             </div>
 
@@ -208,6 +256,21 @@ export default function Post () {
                     <div onClick={()=>{deleteInputImage(index);}}>
                       <CiCircleMinus color='#FF0000' size={20}/>
                     </div>
+                    <select 
+                      value={item.title} 
+                      onChange={(e)=>{
+                        const copy = [...inputImages];
+                        copy[index].title = e.target.value;
+                        setInputImages(copy);
+                      }}
+                      className="dropdownBox"
+                    >
+                      {postOptions.map((option:any, index:any) => (
+                        <option key={index} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 )
               })

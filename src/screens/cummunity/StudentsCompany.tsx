@@ -5,7 +5,7 @@ import axios from 'axios';
 import Footer from '../../components/Footer';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-export default function FreeBoard() {
+export default function StudentsCompany() {
 
   let navigate = useNavigate();
 
@@ -21,36 +21,19 @@ export default function FreeBoard() {
     images : [string]
   }
   
-  // let [list, setList] = useState<ListProps[]>([]);
-  // const fetchDatas = async () => {
-  //   const res = await axios.get(`${MainURL}/community/getposts/posts`);
-  //   if (res.data) {
-  //     const copy = res.data;
-  //     copy.reverse();
-  //     console.log(copy);
-  //     setList(copy);
-  //   }
-  // }
-
-  // useEffect(()=>{
-  //   fetchDatas();
-  // }, []);
-
-  const list = [
-    {
-        "id": 1,
-        "userId": "johnleedev",
-        "userName": "이요한",
-        "userYearStage": "21기",
-        "stOrFa": "student",
-        "title": "계명대 글로벌창업대학원 커뮤니티에 오신 여러분을 환영합니다.",
-        "content": "\"계명대 글로벌창업대학원 커뮤니티\"는 \n계명대 글로벌창업대학원에 재학중인 분들과 졸업생들이 서로 소통하고 교류하기 위한 공간으로 만들었습니다.\n\n사이트를 만든지 얼마되지 않아, 사용하시다가 오타나 불편한 점이 발생할 수도 있습니다.\n그때마다 얼마든지 아래 연락처로 문의하시면, 곧바로 해결해드리도록 하겠습니다.\n혹시 사용하시는 방법을 모르실때도, 얼마든지 문의해주시기 바랍니다.\n\n아무쪼록 이 공간이 많은 학우분들께 큰 도움이 되었으면 좋겠습니다.",
-        "date": "2024-04-30",
-        "views": "127",
-        "isliked": "7",
-        "images": "[]"
+  let [list, setList] = useState<ListProps[]>([]);
+  const fetchDatas = async () => {
+    const res = await axios.get(`${MainURL}/community/getposts/studentscompany`);
+    if (res.data) {
+      const copy = res.data;
+      copy.reverse();
+      setList(copy);
     }
-  ]
+  }
+
+  useEffect(()=>{
+    fetchDatas();
+  }, []);
 
   // State 변수 추가
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -79,13 +62,12 @@ export default function FreeBoard() {
 
   // 조회수 증가시킨 후에, 디테일 페이지로 넘어가기 
   const openPostDetails = async (post: any) => {
-    navigate('/community/detail', {state : post});
-    // axios.post(`${MainURL}/community/postaddviews/${post.id}`)
-    //   .then(()=>{
-    //     navigate('/community/detail', {state : post});
-    //   }).catch((error)=>{
-    //     console.error(error);
-    //   })
+    axios.post(`${MainURL}/community/postaddviews/${post.id}`)
+      .then(()=>{
+        navigate('/community/studentscompanydetail', {state : post});
+      }).catch((error)=>{
+        console.error(error);
+      })
   };
 
   // 글쓰기 함수
@@ -96,7 +78,7 @@ export default function FreeBoard() {
         || userIdCopy === null || userIdCopy === undefined) {
         alert('권한이 없습니다. 로그인이 필요합니다.')
       } else {
-        navigate('/community/post');  
+        navigate('/community/studentscompanypost');  
       }
   };
   
@@ -112,22 +94,22 @@ export default function FreeBoard() {
           <div className="subpage__menu__list">
             <div
               onClick={()=>{navigate('/community');}}
-              className="subpage__menu__item subpage__menu__item--on"
+              className="subpage__menu__item"
             >
               자유게시판
             </div>
-            {/* <div
+            <div
               onClick={()=>{navigate('/community/studentscompany');}}
-              className="subpage__menu__item"
+              className="subpage__menu__item subpage__menu__item--on"
             >
               동문기업소개
-            </div> */}
+            </div>
           </div>
         </div>
 
         <div className="subpage__main">
           <div className="subpage__main__title">
-            <h3>자유게시판</h3>
+            <h3>동문기업소개</h3>
             <div className='postBtnbox'
               onClick={openPostPage}
             >
@@ -140,8 +122,9 @@ export default function FreeBoard() {
               <div className="tbl_head01">
                 <ul className='titleRow'>
                   <li className="th_num">번호</li>
-                  <li className="th_title">제목</li>
-                  <li className="th_name">글쓴이</li>
+                  <li style={{width:'30%'}}>업체명</li>
+                  <li className="th_name">동문이름</li>
+                  <li className="th_date">기수</li>
                   <li className="th_date">등록일</li>
                   <li className="th_views">조회수</li>
                 </ul>
@@ -154,8 +137,9 @@ export default function FreeBoard() {
                         }}
                       >
                         <li className="td_num">{item.id}</li>
-                        <li className="td_title">{renderPreview(item.title)}</li>
+                        <li style={{width:'30%'}}>{item.companyName}</li>
                         <li className="td_name">{item.userName}</li>
+                        <li className="td_date">{item.userYearStage}</li>
                         <li className="td_date">{item.date}</li>
                         <li className="td_views">{item.views}</li>
                       </ul>

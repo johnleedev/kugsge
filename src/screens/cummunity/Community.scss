@@ -269,6 +269,14 @@
               font-size: 18px;
               white-space: pre-line;
             }
+            .noticeRow {
+              margin-bottom: 50px;
+              
+              .noticeRow_title {
+                font-size: 20px;
+                margin-bottom: 10px;
+              }
+            }
           }
           .btn-box {
             @include middle();
@@ -343,7 +351,7 @@
             border-radius: 5px;
             margin-bottom: 10px;
           }
-          > .textarea {
+          .textarea {
             width: 100%;
             margin-left: 5px;
             font-size: 15px;
@@ -362,6 +370,9 @@
             min-height: 500px;
           }
           .textareacomment {
+            min-height: 200px;
+          }
+          .textareapost2 {
             min-height: 200px;
           }
         }
@@ -408,6 +419,24 @@
             }
             div {
               @include middle();
+            }
+            > .inputdefault {
+              width: 100%;
+              font-size: 15px;
+              font-weight: normal;
+              height: 40px;
+              padding-left: 10px;
+              box-sizing: border-box;
+              border: 1px solid #E9E9E9;
+              border-radius: 5px;
+            }
+            .dropdownBox {
+              border: 1px solid #dedede;
+              border-radius: 5px;
+              padding: 2px;
+              width: 100px;
+              height: 40px;
+              outline: none;
             }
           }
           

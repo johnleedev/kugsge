@@ -4,20 +4,12 @@ import Footer from '../../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainURL from '../../MainURL';
+import UserData from '../../UserData';
 
 export default function Students() {
 
   let navigate = useNavigate();
-
-  const userName = sessionStorage.getItem('userName');
-  const userId = sessionStorage.getItem('userId');
-  const userYearStage = sessionStorage.getItem('userYearStage');
-
-  const checkLoginData = 
-  ( userName === null || userName === undefined 
-  || userId === null || userId === undefined 
-  || userYearStage === null || userYearStage === undefined) 
-
+  
   interface UsersProps {
     userName: string;
     userPhone: string;
@@ -34,33 +26,53 @@ export default function Students() {
     userCoImage :string;
   }
 
-  const [usersOrigin, setUsersOrigin] = useState<UsersProps[]>([]);
-  const [users, setUsers] = useState<UsersProps[]>([]);
-  const [yearStages, setYearStages] = useState([]);
+  const yearStagesdata = [
+    "전체",
+    "21기",
+    "20기",
+    "19기",
+    "18기",
+    "17기",
+    "13기",
+    "7기"
+  ]
+
+  const userName = sessionStorage.getItem('userName');
+  const userId = sessionStorage.getItem('userId');
+  const userYearStage = sessionStorage.getItem('userYearStage');
+
+  const checkLoginData = 
+  ( userName === null || userName === undefined 
+  || userId === null || userId === undefined 
+  || userYearStage === null || userYearStage === undefined) 
+
+
+
+  const [usersOrigin, setUsersOrigin] = useState<any>([]);
+  const [users, setUsers] = useState<any>([]);
+  const [yearStages, setYearStages] = useState<any>([]);
   const [selectedYearStage, setSelectedYearStage] = useState('');
   const fetchPosts = async () => {
-    const res = await axios.get(`${MainURL}/network/getusers`)
-    if (res) {
-      const copy: UsersProps[] = res.data.users;
-      const yearStagesCopy = res.data.yearStages;
-      yearStagesCopy.unshift("전체");
-      setYearStages(yearStagesCopy);
-      copy.sort((a, b) => {
-        const numA = parseInt(a.userYearStage);
-        const numB = parseInt(b.userYearStage);
-        if (numA !== numB) {
-          return numB - numA;
-        }
-        const aHasValue = a.userCoName !== "" && a.userCoImage !== "" && a.userCoImage !== null;
-        const bHasValue = b.userCoName !== "" && b.userCoImage !== "" && b.userCoImage !== null;
-        if (aHasValue && !bHasValue) return -1;
-        if (!aHasValue && bHasValue) return 1;
-        if (!aHasValue && !bHasValue) return 0;
-         return a.userCoName.localeCompare(b.userCoName);
-      });
-      setUsersOrigin(copy);
-      setUsers(copy);
-    }
+
+    const copy = UserData;
+    const yearStagesCopy = yearStagesdata;
+    yearStagesCopy.unshift("전체");
+    setYearStages(yearStagesCopy);
+    copy.sort((a, b) => {
+      const numA = parseInt(a.userYearStage);
+      const numB = parseInt(b.userYearStage);
+      if (numA !== numB) {
+        return numB - numA;
+      }
+      const aHasValue = a.userCoName !== "" && a.userCoImage !== "" && a.userCoImage !== null;
+      const bHasValue = b.userCoName !== "" && b.userCoImage !== "" && b.userCoImage !== null;
+      if (aHasValue && !bHasValue) return -1;
+      if (!aHasValue && bHasValue) return 1;
+      if (!aHasValue && !bHasValue) return 0;
+       return a.userCoName.localeCompare(b.userCoName);
+    });
+    setUsersOrigin(copy);
+    setUsers(copy);
   };
 
   

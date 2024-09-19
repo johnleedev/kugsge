@@ -3,7 +3,8 @@
 
 // let MainURL = "http://175.45.193.4:80"
 
-let MainURL = "http://www.kugsge.com"
+let MainURL = ""
+// let MainURL = "http://www.kugsge.com"
 
 
 export default MainURL

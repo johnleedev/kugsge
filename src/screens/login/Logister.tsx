@@ -87,6 +87,7 @@ export default function Logister(props:any) {
       setLogisterIdCheck(true);
     }
   };
+  
   const handleCheckIdFaculty = async () => {
     const res = await axios.get(`${MainURL}/login/logincheckidfaculty/${logisterId}`)
     if (res.data) { 
@@ -119,7 +120,9 @@ export default function Logister(props:any) {
     { value: '18기', label: '18기' },
     { value: '19기', label: '19기' },
     { value: '20기', label: '20기' },
-    { value: '21기', label: '21기' }
+    { value: '21기', label: '21기' },
+    { value: '22기', label: '22기' },
+    { value: '23기', label: '23기' }
   ];
 
   const handleLogister = async () => {
@@ -649,13 +652,13 @@ export default function Logister(props:any) {
                 if (logisterId === '' || logisterName === '' || logisterPasswd === '' || logisterPhone === '') {
                   alert('필수항목을 채워주세요.')
                 } else {
-                  if (logisterIdCheck) {
-                    studentOrFaculty === 'student' 
-                    ? handleLogister()
-                    : handleLogisterFaculty()
-                  } else {
-                    alert('아이디 중복 체크를 해주세요.')
-                  }
+                  // if (logisterIdCheck) {
+                  //   studentOrFaculty === 'student' 
+                  //   ? handleLogister()
+                  //   : handleLogisterFaculty()
+                  // } else {
+                  //   alert('아이디 중복 체크를 해주세요.')
+                  // }
                 }
               }}
               >

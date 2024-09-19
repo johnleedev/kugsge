@@ -11,8 +11,10 @@ const Header: React.FC = () => {
   const menus = [
     { title: "창업정보", url:"/businessinfo", links: [{title:"창업관련사이트", subUrl:"/businessinfo"}] },
     { title: "네트워크", url:"/network", links: [{title:"재학생 및 졸업생", subUrl:"/network"}, {title:"교수진", subUrl:  "/network/faculty"}] },
-    { title: "커뮤니티", url:"/community", links: [{title:"자유게시판", subUrl:"/community"}] },
-    { title: "수업리뷰", url:"/class", links: [{title:"2024년 1학기", subUrl:"/class"}] },
+    { title: "커뮤니티", url:"/community", links: [{title:"자유게시판", subUrl:"/community"},
+      // {title:"동문기업소개", subUrl:"/community/studentscompany"}
+    ] },
+    // { title: "수업리뷰", url:"/class", links: [{title:"2024년 1학기", subUrl:"/class"}] },
   ];
 
   const [menuOpen, setMenuOpen] = useState<boolean>(false);

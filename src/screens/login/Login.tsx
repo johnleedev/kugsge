@@ -14,19 +14,19 @@ export default function Login(props:any) {
   const [logisterPasswd, setLogisterPasswd] = useState('');
   const [studentOrFaculty, setStudentOrFaculty] = useState('');
 
-  // 접속시 접속수 증가시키기
-  const loginUseCount = () => {
-    const currentDate = new Date();
-		const date = format(currentDate, 'yyyy-MM-dd');
-    axios
-      .post(`${MainURL}/login/loginusecount`, {
-        date : date
-      })
-      .then((res) => {return})
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  // // 접속시 접속수 증가시키기
+  // const loginUseCount = () => {
+  //   const currentDate = new Date();
+	// 	const date = format(currentDate, 'yyyy-MM-dd');
+  //   axios
+  //     .post(`${MainURL}/login/loginusecount`, {
+  //       date : date
+  //     })
+  //     .then((res) => {return})
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }
      
   const handleLogin = async () => {
     await axios
@@ -36,7 +36,7 @@ export default function Login(props:any) {
      })
      .then((res)=>{
       if (res.data.success) {
-        loginUseCount();
+        // loginUseCount();
         sessionStorage.setItem('userName', res.data.name);
         sessionStorage.setItem('userId', res.data.userId);
         sessionStorage.setItem('userYearStage', res.data.userYearStage);
@@ -67,7 +67,7 @@ export default function Login(props:any) {
      })
      .then((res)=>{
       if (res.data.success) {
-        loginUseCount();
+        // loginUseCount();
         sessionStorage.setItem('userName', res.data.name);
         sessionStorage.setItem('userId', res.data.userId);
         sessionStorage.setItem('userYearStage', res.data.userYearStage);
@@ -133,13 +133,13 @@ export default function Login(props:any) {
           <div className="buttonbox">
             <div className="button"
              onClick={()=>{
-              if (studentOrFaculty === '') {
-                alert('구분을 선택해주세요')
-              } else {
-                studentOrFaculty === 'student'
-                ? handleLogin()
-                : handleLoginfaculty()
-              }
+              // if (studentOrFaculty === '') {
+              //   alert('구분을 선택해주세요')
+              // } else {
+              //   studentOrFaculty === 'student'
+              //   ? handleLogin()
+              //   : handleLoginfaculty()
+              // }
              }}
             >
               <p>로그인</p>

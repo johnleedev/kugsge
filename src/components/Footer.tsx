@@ -32,7 +32,6 @@ export default function Footer (props:any) {
           </ul>
 
           <ul>
-            <li className='text black'>전화문의 : 010-9584-5948</li>
             <li className='text'>카카오톡문의 : ID - thebetterpeople</li>
             <li className='text'>E-mail: thebetterpeople@naver.com</li>
           </ul>

@@ -53,13 +53,12 @@ export default function Detail() {
     }
   }
   useEffect(()=>{
-    fetchCommentsDatas();
+    // fetchCommentsDatas();
   }, [refresh]);
 
 
   // 좋아요 싫어요 등록 함수 ----------------------------------------------
   const handleislikedtoggle = async () => {
-    console.log('slkdjfl')
     axios 
       .post(`${MainURL}/community/islikedtoggle`, {
         postId : propsData.id,
@@ -168,7 +167,7 @@ export default function Detail() {
 
         {/* 왼쪽 메뉴바 */}
         <div className="subpage__menu">
-          <div className="subpage__menu__title">네트워크</div>
+          <div className="subpage__menu__title">커뮤니티</div>
           <div className="subpage__menu__list">
             <div
               onClick={()=>{navigate('/community');}}
@@ -176,6 +175,12 @@ export default function Detail() {
             >
               자유게시판
             </div>
+            {/* <div
+              onClick={()=>{navigate('/community/studentscompany');}}
+              className="subpage__menu__item"
+            >
+              동문기업소개
+            </div> */}
           </div>
         </div>
 
